@@ -1,0 +1,3847 @@
+{
+  "Entities": [
+    {
+      "EntityType": "Rock.Model.WorkflowType",
+      "Guid": "6e05eb0d-700e-4e3f-9452-4d820730a626",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "IsActive": true,
+        "WorkflowIdPrefix": "",
+        "Name": "Video Training with Comprehension Questions",
+        "Description": "This workflow is an example of how to use comprehension questions to make sure a user gets all questions right before continuing to the next section.",
+        "Order": 0,
+        "WorkTerm": "Video Training",
+        "ProcessingIntervalSeconds": 28800,
+        "IsPersisted": false,
+        "SummaryViewText": "<div class='row'>\n    <div class='col-sm-6'>\n        <dl><dt>Started By</dt><dd>{{ Workflow.InitiatorPersonAlias.Person.FullName }}</dd></dl>\n    </div>\n    <div class='col-sm-6'>\n        <dl><dt>Started On</dt><dd>{{ Workflow.ActivatedDateTime | Date:'MM/dd/yyyy' }} at {{ Workflow.ActivatedDateTime | Date:'hh:mm:ss tt' }}</dd></dl>\n    </div>\n</div>\n\n{% assign attributeList = '' %}\n{% for attribute in Workflow.AttributeValues %}\n    {% if attribute.AttributeIsGridColumn %}\n        {% assign attributeValue = attribute.ValueFormatted %}\n        {% if attributeValue != '' %}\n            {% capture item %}<dt>{{ attribute.AttributeName }}</dt><dd>{{ attributeValue }}</dd>{% endcapture %}\n            {% assign attributeList = attributeList | Append:item %}\n        {% endif %}\n    {% endif %}\n{% endfor %}\n\n{% if attributeList != '' %}\n    <div class='row'>\n        <div class='col-sm-6'>\n            <dl>\n                {{ attributeList }}\n            </dl>\n        </div>\n    </div>\n{% endif %}",
+        "NoActionMessage": "This {{ Workflow.WorkflowType.WorkTerm }} does not currently require your attention.",
+        "LogRetentionPeriod": null,
+        "CompletedWorkflowRetentionPeriod": null,
+        "LoggingLevel": 0,
+        "IconCssClass": "fa fa-list-ol",
+        "CreatedDateTime": "2021-08-12T12:41:43.02",
+        "ModifiedDateTime": "2021-08-12T12:42:40.577"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "CategoryId",
+          "EntityType": "",
+          "Type": 4,
+          "Data": "WorkflowCategory"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActivityType",
+      "Guid": "42870f4b-65da-4823-9308-d97b971d9be0",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsActive": true,
+        "Name": "Video One",
+        "Description": "The form with the first video and set of questions.\nCheck for comprehension with questions.",
+        "IsActivatedWithWorkflow": true,
+        "Order": 0,
+        "CreatedDateTime": "2021-08-12T12:41:43.177",
+        "ModifiedDateTime": "2021-08-12T12:41:43.177"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "WorkflowTypeId",
+          "EntityType": "Rock.Model.WorkflowType",
+          "Type": 1,
+          "Data": "6e05eb0d-700e-4e3f-9452-4d820730a626"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Category",
+      "Guid": "d8ec958d-add5-48fc-b539-cb919f5c9d32",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": null,
+        "EntityTypeQualifierValue": null,
+        "Order": 186,
+        "Name": "Workflow",
+        "Description": "",
+        "IconCssClass": "fa fa-cogs",
+        "HighlightColor": null,
+        "CreatedDateTime": "2020-04-27T11:36:38.62",
+        "ModifiedDateTime": "2020-09-29T14:57:24.53"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.SystemCommunication"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.SystemCommunication",
+      "Guid": "88c7d1cc-3478-4562-a301-ae7d4d7fff6d",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "IsActive": true,
+        "Title": "Workflow Form Notification",
+        "From": "",
+        "FromName": "",
+        "To": "",
+        "Cc": "",
+        "Bcc": "",
+        "Subject": "{{ Workflow.WorkflowType.Name }}: {{ Workflow.Name }}",
+        "Body": "{{ 'Global' | Attribute:'EmailHeader' }}\n\n<p>{{ Person.FirstName }},</p>\n<p>The following {{ Workflow.WorkflowType.Name }} requires action:<p>\n<p>{{ Workflow.WorkflowType.WorkTerm}}: <a href='{{ 'Global' | Attribute:'InternalApplicationRoot' }}WorkflowEntry/{{ Workflow.WorkflowTypeId }}?WorkflowGuid={{ Workflow.Guid }}'>{{ Workflow.Name }}</a></p>\n\n{% assign RequiredFields = false %}\n\n<h3 class=\"separator\">Details</h3>\n\n\n\n{% for attribute in Action.FormAttributes %}\n\n    \n    {% if attribute.IsVisible and attribute.Value != '' %}\n        <div>\n            <strong>{{ attribute.Name }}:</strong>\n            <br />\n            \n                {% if attribute.Url and attribute.Url != '' %}\n                    <a href='{{ attribute.Url }}'>{{ attribute.Value }}</a>\n                {% else %}\n                    {{ attribute.Value }}\n                {% endif %}\n\n        </div>\n        <br />\n    {% endif %}\n    \n        \n    {% if attribute.IsRequired && attribute.Value == Empty %}\n        {% assign RequiredFields = true %}\n    {% endif %}\n\n{% endfor %}\n\n\n\n<table width=\"100%\">\n    <tr>\n        <td>\n\n    <table align=\"left\" style=\"width: 29%; min-width: 190px; margin-bottom: 12px;\" cellpadding=\"0\" cellspacing=\"0\">\n     <tr>\n       <td>\n    \n    \t\t<div><!--[if mso]>\n    \t\t  <v:roundrect xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"urn:schemas-microsoft-com:office:word\" href=\"{{ 'Global' | Attribute:'InternalApplicationRoot' }}WorkflowEntry/{{ Workflow.WorkflowTypeId }}?WorkflowGuid={{ Workflow.Guid }}\" style=\"height:38px;v-text-anchor:middle;width:175px;\" arcsize=\"11%\" strokecolor=\"#269abc\" fillcolor=\"#31b0d5\">\n    \t\t\t<w:anchorlock/>\n    \t\t\t<center style=\"color:#ffffff;font-family:sans-serif;font-size:14px;font-weight:normal;\">View Details</center>\n    \t\t  </v:roundrect>\n    \t\t<![endif]--><a href=\"{{ 'Global' | Attribute:'InternalApplicationRoot' }}WorkflowEntry/{{ Workflow.WorkflowTypeId }}?WorkflowGuid={{ Workflow.Guid }}\"\n    \t\tstyle=\"background-color:#31b0d5;border:1px solid #269abc;border-radius:4px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:14px;font-weight:normal;line-height:38px;text-align:center;text-decoration:none;width:175px;-webkit-text-size-adjust:none;mso-hide:all;\">View Details</a></div>\n    \n    \t</td>\n     </tr>\n    </table>\n\n    {% if Action.ActionType.WorkflowForm.IncludeActionsInNotification == true %}\n\n        {% if RequiredFields != true %}\n    \n            {% for button in Action.ActionType.WorkflowForm.Buttons %}\n                {% capture ButtonLinkSearch %}{% raw %}{{ ButtonLink }}{% endraw %}{% endcapture %}\n                {% capture ButtonLinkReplace %}{{ 'Global' | Attribute:'InternalApplicationRoot' }}WorkflowEntry/{{ Workflow.WorkflowTypeId }}?WorkflowGuid={{ Workflow.Guid }}&ActionId={{ Action.Id }}&Command={{ button.Name }}{% endcapture %}\n                {% capture ButtonHtml %}{{ button.EmailHtml | Replace: ButtonLinkSearch, ButtonLinkReplace }}{% endcapture %}\n\n                {% capture ButtonTextSearch %}{% raw %}{{ ButtonText }}{% endraw %}{% endcapture %}\n                {% capture ButtonTextReplace %}{{ button.Name }}{% endcapture %}\n                {{ ButtonHtml | Replace: ButtonTextSearch, ButtonTextReplace }}\n            {% endfor %}\n        {% endif %}\n\n    {% endif %}\n\n        </td>\n    </tr>\n</table>\n\n\n{{ 'Global' | Attribute:'EmailFooter' }}",
+        "CssInliningEnabled": false,
+        "SMSMessage": null,
+        "LavaFieldsJson": "{}",
+        "PushTitle": null,
+        "PushMessage": null,
+        "PushSound": null,
+        "PushImageBinaryFileId": null,
+        "PushOpenAction": null,
+        "PushOpenMessage": null,
+        "PushData": null,
+        "LavaFields": {},
+        "CreatedDateTime": null,
+        "ModifiedDateTime": null
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "CategoryId",
+          "EntityType": "Rock.Model.Category",
+          "Type": 1,
+          "Data": "d8ec958d-add5-48fc-b539-cb919f5c9d32"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Category",
+      "Guid": "767df724-e5f9-49b0-b1a8-7e3bb3317e84",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": null,
+        "EntityTypeQualifierValue": null,
+        "Order": 85,
+        "Name": "Global",
+        "Description": null,
+        "IconCssClass": null,
+        "HighlightColor": null,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2020-09-29T14:57:24.53"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.DefinedType"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.DefinedType",
+      "Guid": "407a3a73-a3ef-4970-b856-2a33f62ac72e",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "Order": 26,
+        "Name": "Button HTML",
+        "Description": "Contains HTML for common button styles.",
+        "HelpText": null,
+        "IsActive": true,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": null
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.TextFieldType"
+        },
+        {
+          "Property": "CategoryId",
+          "EntityType": "Rock.Model.Category",
+          "Type": 1,
+          "Data": "767df724-e5f9-49b0-b1a8-7e3bb3317e84"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.DefinedValue",
+      "Guid": "fdc397cd-8b4a-436e-bea1-bce2e6717c03",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Order": 0,
+        "Value": "Primary",
+        "Description": "Used for the primary button on the form. Styled to use the Rock brand color (orange).",
+        "IsActive": true,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": null
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "DefinedTypeId",
+          "EntityType": "Rock.Model.DefinedType",
+          "Type": 1,
+          "Data": "407a3a73-a3ef-4970-b856-2a33f62ac72e"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "6ff59f53-28ea-4bfe-afe1-a459cc588495",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "DefinedTypeId",
+        "Key": "ButtonHTML",
+        "Name": "Button HTML",
+        "Description": "The HTML to use for displaying a button. \"{{ ButtonLink }}\", \"{{ ButtonClick }}\" and \"{{ ButtonText }}\" merge fields are available to be used in the HTML as placeholders.  {{ ButtonLink }} will be replaced with the url that user should be redirected to when they select that button.  {{ ButtonClick }} is replaced with any necessary client script (e.g. validation and animation).  {{ ButtonText }} is replaced with the name to be displayed.",
+        "Order": 28,
+        "IsGridColumn": true,
+        "DefaultValue": "",
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "AbbreviatedName": "Button HTML",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": null
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.CodeEditorFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.DefinedValue"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.DefinedType",
+          "Type": 1,
+          "Data": "407a3a73-a3ef-4970-b856-2a33f62ac72e"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "7e21a104-50f6-4c93-943b-d1ebee3444ee",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "Key": "editorHeight",
+        "Value": ""
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "6ff59f53-28ea-4bfe-afe1-a459cc588495"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "203785f4-60c1-4bd4-b2f4-cc125857a360",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "Key": "editorMode",
+        "Value": "2"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "6ff59f53-28ea-4bfe-afe1-a459cc588495"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "afd572cd-b751-474f-945d-97dd1a3c7edf",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "Key": "editorTheme",
+        "Value": "0"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "6ff59f53-28ea-4bfe-afe1-a459cc588495"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "1c64616d-c1fd-471b-82d7-d7e32966e59c",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "Value": "<a  href=\"{{ ButtonLink }}\" \n    onclick=\"{{ ButtonClick }}\"\n    data-loading-text=\"<i class='fa fa-refresh fa-spin'></i> {{ ButtonText }}\"\n    class=\"btn btn-primary\"\n    >\n    {{ ButtonText }}\n</a>",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": null
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "6ff59f53-28ea-4bfe-afe1-a459cc588495"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.DefinedValue",
+          "Type": 1,
+          "Data": "fdc397cd-8b4a-436e-bea1-bce2e6717c03"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "8da98984-ba25-473c-93ba-8ba2fd58c4c7",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "DefinedTypeId",
+        "Key": "ButtonEmailHTML",
+        "Name": "Button Email HTML",
+        "Description": "The HTML to use for displaying a button in an HTML email. {{ ButtonLink }}, {{ ButtonClick }} and {{ ButtonText }} merge fields are available to be used in the HTML as placeholders.  {{ ButtonLink }} will be replaced with the url that user should be redirected to when they select that button.  {{ ButtonClick }} is replaced with any necessary client script (e.g. validation and animation).  {{ ButtonText }} is replaced with the name to be displayed.",
+        "Order": 35,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "AbbreviatedName": "Button Email HTML",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": null
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.CodeEditorFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.DefinedValue"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.DefinedType",
+          "Type": 1,
+          "Data": "407a3a73-a3ef-4970-b856-2a33f62ac72e"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "73b8da44-9d4b-4c93-bcea-632b6b43426e",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "Key": "editorHeight",
+        "Value": ""
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "8da98984-ba25-473c-93ba-8ba2fd58c4c7"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "94a24055-9866-4ac8-8e57-278d232c935b",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "Key": "editorMode",
+        "Value": "2"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "8da98984-ba25-473c-93ba-8ba2fd58c4c7"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "3446ecac-9273-449c-b933-f0f6506f5b19",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "Key": "editorTheme",
+        "Value": "0"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "8da98984-ba25-473c-93ba-8ba2fd58c4c7"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "805099f9-a908-48ba-a539-a7e8dfea4a06",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "Value": "<table align=\"left\" style=\"width: 29%; min-width: 190px; margin-bottom: 12px;\" cellpadding=\"0\" cellspacing=\"0\">\n <tr>\n   <td>\n\n\t\t<div><!--[if mso]>\n\t\t  <v:roundrect xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"urn:schemas-microsoft-com:office:word\" href=\"{{ ButtonLink }}\" style=\"height:38px;v-text-anchor:middle;width:175px;\" arcsize=\"11%\" strokecolor=\"#e76812\" fillcolor=\"#ee7624\">\n\t\t\t<w:anchorlock/>\n\t\t\t<center style=\"color:#ffffff;font-family:sans-serif;font-size:13px;font-weight:normal;\">{{ ButtonText }}</center>\n\t\t  </v:roundrect>\n\t\t<![endif]--><a href=\"{{ ButtonLink }}\"\n\t\tstyle=\"background-color:#ee7624;border:1px solid #e76812;border-radius:4px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:13px;font-weight:normal;line-height:38px;text-align:center;text-decoration:none;width:175px;-webkit-text-size-adjust:none;mso-hide:all;\">{{ ButtonText }}</a></div>\n\n\t</td>\n </tr>\n</table>",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": null
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "8da98984-ba25-473c-93ba-8ba2fd58c4c7"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.DefinedValue",
+          "Type": 1,
+          "Data": "fdc397cd-8b4a-436e-bea1-bce2e6717c03"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionForm",
+      "Guid": "107760b1-d9fb-4251-8487-330054066fe3",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IncludeActionsInNotification": true,
+        "Header": "{% assign showmsg = Workflow | Attribute:'Continue' %}\n{% if showmsg == false %}\n  <div class=\"alert alert-danger\" role=\"alert\">\n    {{Workflow | Attribute:'Message'}}\n  </div>\n{% endif %}",
+        "Footer": "",
+        "ActionAttributeGuid": null,
+        "AllowNotes": false,
+        "CreatedDateTime": "2021-08-12T12:41:43.27",
+        "ModifiedDateTime": "2021-08-12T12:42:40.843"
+      },
+      "Transforms": {
+        "5df81bd2-6d4e-438e-98a8-6e756b738264": "Next^fdc397cd-8b4a-436e-bea1-bce2e6717c03^^Your information has been submitted successfully."
+      },
+      "References": [
+        {
+          "Property": "NotificationSystemCommunicationId",
+          "EntityType": "Rock.Model.SystemCommunication",
+          "Type": 1,
+          "Data": "88c7d1cc-3478-4562-a301-ae7d4d7fff6d"
+        },
+        {
+          "Property": "Actions",
+          "EntityType": "Rock.Model.DefinedValue",
+          "Type": 1,
+          "Data": "fdc397cd-8b4a-436e-bea1-bce2e6717c03"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "0ee3bb85-9ac1-4718-812a-2c9762dcbfe8",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "WorkflowTypeId",
+        "Key": "VideoOne",
+        "Name": "Video One",
+        "Description": "This attribute contains the first video that someone will need to watch to move on to the next section. Watch is not enforced/required.",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "AbbreviatedName": "Video One",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2021-08-12T12:42:40.623"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "rocks.pillars.FieldTypes.StaticHtml"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.Workflow"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.WorkflowType",
+          "Type": 1,
+          "Data": "6e05eb0d-700e-4e3f-9452-4d820730a626"
+        },
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "rocks.pillars.FieldTypes.StaticHtml"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.Workflow"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "5c5c6ace-643b-473d-b0f6-1b5391bb363f",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "content",
+        "Value": "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/1prweT95Mo0\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "0ee3bb85-9ac1-4718-812a-2c9762dcbfe8"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionFormAttribute",
+      "Guid": "6e121f39-6a99-456f-95e3-7526f2387721",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Order": 0,
+        "IsVisible": true,
+        "IsReadOnly": true,
+        "IsRequired": false,
+        "HideLabel": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.27",
+        "ModifiedDateTime": "2021-08-12T12:41:43.27"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "WorkflowActionFormId",
+          "EntityType": "Rock.Model.WorkflowActionForm",
+          "Type": 1,
+          "Data": "107760b1-d9fb-4251-8487-330054066fe3"
+        },
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "0ee3bb85-9ac1-4718-812a-2c9762dcbfe8"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "afaf4d6a-5105-4c6c-9df5-5284fa74fcda",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "WorkflowTypeId",
+        "Key": "QuestionOne",
+        "Name": "Question One",
+        "Description": "This is the first comprehension question we will ask to go with the video.",
+        "Order": 1,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "AbbreviatedName": "Question One",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2021-08-12T12:42:40.64"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.SelectSingleFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.Workflow"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.WorkflowType",
+          "Type": 1,
+          "Data": "6e05eb0d-700e-4e3f-9452-4d820730a626"
+        },
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.SelectSingleFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.Workflow"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "a1bdf0fc-d4f1-4a83-8e64-167db0c5bfe3",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "fieldtype",
+        "Value": "rb"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "afaf4d6a-5105-4c6c-9df5-5284fa74fcda"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "e61457ff-b59a-4229-b044-d3af815da65e",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "repeatColumns",
+        "Value": "1"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "afaf4d6a-5105-4c6c-9df5-5284fa74fcda"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "ce11f009-0c21-4549-a99a-5b352ad772bb",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "values",
+        "Value": "1^Answer One (Correct),\n2^Answer Two (Incorrect),\n3^Answer Three (Incorrect)"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "afaf4d6a-5105-4c6c-9df5-5284fa74fcda"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionFormAttribute",
+      "Guid": "c2e660be-635e-4ed4-a354-d3a8dbc57771",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Order": 1,
+        "IsVisible": true,
+        "IsReadOnly": false,
+        "IsRequired": true,
+        "HideLabel": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.27",
+        "ModifiedDateTime": "2021-08-12T12:41:43.27"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "WorkflowActionFormId",
+          "EntityType": "Rock.Model.WorkflowActionForm",
+          "Type": 1,
+          "Data": "107760b1-d9fb-4251-8487-330054066fe3"
+        },
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "afaf4d6a-5105-4c6c-9df5-5284fa74fcda"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "89454ca4-dee0-4916-b1f9-e25095aa1243",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "WorkflowTypeId",
+        "Key": "QuestionTwo",
+        "Name": "Question Two",
+        "Description": "This is the second comprehension question we will ask to go with the video.",
+        "Order": 2,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "AbbreviatedName": "Question Two",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2021-08-12T12:42:40.67"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.SelectSingleFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.Workflow"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.WorkflowType",
+          "Type": 1,
+          "Data": "6e05eb0d-700e-4e3f-9452-4d820730a626"
+        },
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.SelectSingleFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.Workflow"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "2e6d1002-2e14-47bd-9e1b-2308fc7cec84",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "fieldtype",
+        "Value": "rb"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "89454ca4-dee0-4916-b1f9-e25095aa1243"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "f47832dd-9a39-4586-9fa0-e7531433393f",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "repeatColumns",
+        "Value": "1"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "89454ca4-dee0-4916-b1f9-e25095aa1243"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "5c41f0de-eaf4-42f0-b578-6e135e3bb4cb",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "values",
+        "Value": "1^Answer One (Incorrect),\n2^Answer Two (Correct),\n3^Answer Three (Incorrect)"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "89454ca4-dee0-4916-b1f9-e25095aa1243"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionFormAttribute",
+      "Guid": "14c3624a-62ab-42f0-b497-0fef95ba04ff",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Order": 2,
+        "IsVisible": true,
+        "IsReadOnly": false,
+        "IsRequired": true,
+        "HideLabel": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.27",
+        "ModifiedDateTime": "2021-08-12T12:41:43.27"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "WorkflowActionFormId",
+          "EntityType": "Rock.Model.WorkflowActionForm",
+          "Type": 1,
+          "Data": "107760b1-d9fb-4251-8487-330054066fe3"
+        },
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "89454ca4-dee0-4916-b1f9-e25095aa1243"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "23c017e9-f1e1-4959-a05e-fbe1c8d85381",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "WorkflowTypeId",
+        "Key": "VideoTwo",
+        "Name": "Video Two",
+        "Description": "This attribute contains the second video that someone will need to watch to move on to the next section. Watch is not enforced/required.",
+        "Order": 3,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "AbbreviatedName": "Video Two",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2021-08-12T12:42:40.687"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "rocks.pillars.FieldTypes.StaticHtml"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.Workflow"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.WorkflowType",
+          "Type": 1,
+          "Data": "6e05eb0d-700e-4e3f-9452-4d820730a626"
+        },
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "rocks.pillars.FieldTypes.StaticHtml"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.Workflow"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "52b3f8c5-2196-48e5-945b-2ce45e322c94",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "content",
+        "Value": "<iframe src=\"https://player.vimeo.com/video/323479204?h=9abe460034\" width=\"640\" height=\"360\" frameborder=\"0\" allow=\"autoplay; fullscreen; picture-in-picture\" allowfullscreen></iframe>"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "23c017e9-f1e1-4959-a05e-fbe1c8d85381"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionFormAttribute",
+      "Guid": "96ab37e9-623c-4b6e-8be3-055f54633135",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Order": 3,
+        "IsVisible": false,
+        "IsReadOnly": true,
+        "IsRequired": false,
+        "HideLabel": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.27",
+        "ModifiedDateTime": "2021-08-12T12:41:43.27"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "WorkflowActionFormId",
+          "EntityType": "Rock.Model.WorkflowActionForm",
+          "Type": 1,
+          "Data": "107760b1-d9fb-4251-8487-330054066fe3"
+        },
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "23c017e9-f1e1-4959-a05e-fbe1c8d85381"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "b653a5e7-a2aa-4993-9cb9-c36e50c6c36e",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "WorkflowTypeId",
+        "Key": "QuestionThree",
+        "Name": "Question Three",
+        "Description": "This is third second comprehension question we will ask to go with the video.",
+        "Order": 4,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "AbbreviatedName": "Question Three",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2021-08-12T12:42:40.717"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.SelectSingleFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.Workflow"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.WorkflowType",
+          "Type": 1,
+          "Data": "6e05eb0d-700e-4e3f-9452-4d820730a626"
+        },
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.SelectSingleFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.Workflow"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "31ae208c-4712-48f4-8a47-8cbcd43e831f",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "fieldtype",
+        "Value": "rb"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "b653a5e7-a2aa-4993-9cb9-c36e50c6c36e"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "098b38db-fbf1-4b5d-8666-6f367648b2ba",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "repeatColumns",
+        "Value": "1"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "b653a5e7-a2aa-4993-9cb9-c36e50c6c36e"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "c469ec4b-f4ad-4ac1-8365-a297763a38f6",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "values",
+        "Value": "1^Answer One (Incorrect),\n2^Answer Two (Incorrect),\n3^Answer Three (Correct)"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "b653a5e7-a2aa-4993-9cb9-c36e50c6c36e"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionFormAttribute",
+      "Guid": "adf6dce5-588d-4cc1-a843-4e69bd345e69",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Order": 4,
+        "IsVisible": false,
+        "IsReadOnly": true,
+        "IsRequired": false,
+        "HideLabel": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.27",
+        "ModifiedDateTime": "2021-08-12T12:41:43.27"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "WorkflowActionFormId",
+          "EntityType": "Rock.Model.WorkflowActionForm",
+          "Type": 1,
+          "Data": "107760b1-d9fb-4251-8487-330054066fe3"
+        },
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "b653a5e7-a2aa-4993-9cb9-c36e50c6c36e"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "93db97fe-3d33-437c-ade7-cdfa8088d354",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "WorkflowTypeId",
+        "Key": "Continue",
+        "Name": "Continue",
+        "Description": "This variable determines whether or not the user can go to the next section.",
+        "Order": 5,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "AbbreviatedName": "Continue",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2021-08-12T12:42:40.733"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.BooleanFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.Workflow"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.WorkflowType",
+          "Type": 1,
+          "Data": "6e05eb0d-700e-4e3f-9452-4d820730a626"
+        },
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.BooleanFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.Workflow"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "0e3643fd-8772-45ae-b03a-1826ba7e28ad",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "BooleanControlType",
+        "Value": "0"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "93db97fe-3d33-437c-ade7-cdfa8088d354"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "b47c62f6-3159-437d-bfc2-395510064e94",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "falsetext",
+        "Value": "False"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "93db97fe-3d33-437c-ade7-cdfa8088d354"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "69b266e3-9565-4e8f-be25-1b595525fd4e",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "truetext",
+        "Value": "True"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "93db97fe-3d33-437c-ade7-cdfa8088d354"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionFormAttribute",
+      "Guid": "e362d40a-b27a-4f1a-8221-75ce5728d052",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Order": 5,
+        "IsVisible": false,
+        "IsReadOnly": true,
+        "IsRequired": false,
+        "HideLabel": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.27",
+        "ModifiedDateTime": "2021-08-12T12:41:43.27"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "WorkflowActionFormId",
+          "EntityType": "Rock.Model.WorkflowActionForm",
+          "Type": 1,
+          "Data": "107760b1-d9fb-4251-8487-330054066fe3"
+        },
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "93db97fe-3d33-437c-ade7-cdfa8088d354"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "bfd3a571-edf0-45ae-b0e8-28e9f3e9c0cb",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "WorkflowTypeId",
+        "Key": "Message",
+        "Name": "Message",
+        "Description": "The error message we will display if an answer is incorrect.",
+        "Order": 6,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "AbbreviatedName": "Message",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2021-08-12T12:42:40.767"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.TextFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.Workflow"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.WorkflowType",
+          "Type": 1,
+          "Data": "6e05eb0d-700e-4e3f-9452-4d820730a626"
+        },
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.TextFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.Workflow"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "ac974dae-9cb8-4a20-9c0e-9341da68ebb1",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "ispassword",
+        "Value": "False"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "bfd3a571-edf0-45ae-b0e8-28e9f3e9c0cb"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "25706780-15e9-4456-b9bf-2b14ab26efeb",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "maxcharacters",
+        "Value": ""
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "bfd3a571-edf0-45ae-b0e8-28e9f3e9c0cb"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "8351771a-3ce1-418c-ab35-a63f93351897",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "showcountdown",
+        "Value": "False"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "bfd3a571-edf0-45ae-b0e8-28e9f3e9c0cb"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionFormAttribute",
+      "Guid": "6b1dd633-a07d-4c97-84cd-8d353e37d17c",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Order": 6,
+        "IsVisible": false,
+        "IsReadOnly": true,
+        "IsRequired": false,
+        "HideLabel": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.27",
+        "ModifiedDateTime": "2021-08-12T12:41:43.27"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "WorkflowActionFormId",
+          "EntityType": "Rock.Model.WorkflowActionForm",
+          "Type": 1,
+          "Data": "107760b1-d9fb-4251-8487-330054066fe3"
+        },
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "bfd3a571-edf0-45ae-b0e8-28e9f3e9c0cb"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionType",
+      "Guid": "f182ebf1-b685-4340-8ba4-d6be05d9baa0",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Name": "Video One Form",
+        "Order": 0,
+        "IsActionCompletedOnSuccess": true,
+        "IsActivityCompletedOnSuccess": false,
+        "CriteriaAttributeGuid": null,
+        "CriteriaComparisonType": 1,
+        "CriteriaValue": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.27",
+        "ModifiedDateTime": "2021-08-12T12:41:43.27"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "ActivityTypeId",
+          "EntityType": "Rock.Model.WorkflowActivityType",
+          "Type": 1,
+          "Data": "42870f4b-65da-4823-9308-d97b971d9be0"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.UserEntryForm"
+        },
+        {
+          "Property": "WorkflowFormId",
+          "EntityType": "Rock.Model.WorkflowActionForm",
+          "Type": 1,
+          "Data": "107760b1-d9fb-4251-8487-330054066fe3"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "234910f2-a0db-4d7d-baf7-83c880ef30ae",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Active",
+        "Name": "Active",
+        "Description": "Should Service be used?",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "False",
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "AbbreviatedName": "Active",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": null
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.BooleanFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.UserEntryForm"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "1e5b1e41-d1dc-48a8-8b73-87d678600d6f",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.507",
+        "ModifiedDateTime": "2021-08-12T12:41:43.507"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "234910f2-a0db-4d7d-baf7-83c880ef30ae"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "f182ebf1-b685-4340-8ba4-d6be05d9baa0"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "c178113d-7c86-4229-8424-c6d0cf4a7e23",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Order",
+        "Name": "Order",
+        "Description": "The order that this service should be used (priority)",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "IsMultiValue": false,
+        "IsRequired": true,
+        "IconCssClass": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "AbbreviatedName": "Order",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2017-09-28T16:52:04.76"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.IntegerFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.UserEntryForm"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionType",
+      "Guid": "f9029911-89c8-4002-8003-73262e57dccb",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Name": "Initialize Continue",
+        "Order": 1,
+        "IsActionCompletedOnSuccess": true,
+        "IsActivityCompletedOnSuccess": false,
+        "CriteriaAttributeGuid": null,
+        "CriteriaComparisonType": 1,
+        "CriteriaValue": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.27",
+        "ModifiedDateTime": "2021-08-12T12:41:43.27"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "ActivityTypeId",
+          "EntityType": "Rock.Model.WorkflowActivityType",
+          "Type": 1,
+          "Data": "42870f4b-65da-4823-9308-d97b971d9be0"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeValue"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "d7eaa859-f500-4521-9523-488b12eaa7d2",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Active",
+        "Name": "Active",
+        "Description": "Should Service be used?",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "False",
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "AbbreviatedName": "Active",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": null
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.BooleanFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeValue"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "fcd5588e-3ac6-4282-b809-69ac3a1ffdf2",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.523",
+        "ModifiedDateTime": "2021-08-12T12:41:43.523"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "d7eaa859-f500-4521-9523-488b12eaa7d2"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "f9029911-89c8-4002-8003-73262e57dccb"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "44a0b977-4730-4519-8ff6-b0a01a95b212",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Attribute",
+        "Name": "Attribute",
+        "Description": "The attribute to set the value of.",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "IsMultiValue": false,
+        "IsRequired": true,
+        "IconCssClass": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "AbbreviatedName": "Attribute",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2017-09-28T16:52:04.333"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.WorkflowAttributeFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeValue"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "ad45db25-9a5b-4992-9169-71740c0b582e",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "93db97fe-3d33-437c-ade7-cdfa8088d354",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.523",
+        "ModifiedDateTime": "2021-08-12T12:41:43.523"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "44a0b977-4730-4519-8ff6-b0a01a95b212"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "f9029911-89c8-4002-8003-73262e57dccb"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "57093b41-50ed-48e5-b72b-8829e62704c8",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Order",
+        "Name": "Order",
+        "Description": "The order that this service should be used (priority)",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "IsMultiValue": false,
+        "IsRequired": true,
+        "IconCssClass": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "AbbreviatedName": "Order",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2017-09-28T16:52:04.347"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.IntegerFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeValue"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "e5272b11-a2b8-49dc-860d-8d574e2bc15c",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Value",
+        "Name": "Text Value|Attribute Value",
+        "Description": "The text or attribute to set the value from. <span class='tip tip-lava'></span>",
+        "Order": 1,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "AbbreviatedName": "Text Value|Attribute Value",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": null
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.WorkflowTextOrAttributeFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeValue"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "614a2e61-e70c-4fdc-9c3e-126be5387b7a",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "True",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.523",
+        "ModifiedDateTime": "2021-08-12T12:41:43.523"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "e5272b11-a2b8-49dc-860d-8d574e2bc15c"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "f9029911-89c8-4002-8003-73262e57dccb"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionType",
+      "Guid": "f5068e21-d39e-41e2-9f15-95fa7f6fd1c2",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Name": "Set Continue to False if Question One Incorrect",
+        "Order": 2,
+        "IsActionCompletedOnSuccess": true,
+        "IsActivityCompletedOnSuccess": false,
+        "CriteriaAttributeGuid": "afaf4d6a-5105-4c6c-9df5-5284fa74fcda",
+        "CriteriaComparisonType": 2,
+        "CriteriaValue": "1",
+        "CreatedDateTime": "2021-08-12T12:41:43.27",
+        "ModifiedDateTime": "2021-08-12T12:41:43.27"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "ActivityTypeId",
+          "EntityType": "Rock.Model.WorkflowActivityType",
+          "Type": 1,
+          "Data": "42870f4b-65da-4823-9308-d97b971d9be0"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeValue"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "8e7c442f-818f-43ba-930b-af63a1a7ba16",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.553",
+        "ModifiedDateTime": "2021-08-12T12:41:43.553"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "d7eaa859-f500-4521-9523-488b12eaa7d2"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "f5068e21-d39e-41e2-9f15-95fa7f6fd1c2"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "5dc77338-48bb-4732-90b6-326f81b6ab3b",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "93db97fe-3d33-437c-ade7-cdfa8088d354",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.553",
+        "ModifiedDateTime": "2021-08-12T12:41:43.553"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "44a0b977-4730-4519-8ff6-b0a01a95b212"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "f5068e21-d39e-41e2-9f15-95fa7f6fd1c2"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "7944254b-5367-4086-9022-334f032f2c8f",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.553",
+        "ModifiedDateTime": "2021-08-12T12:41:43.553"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "e5272b11-a2b8-49dc-860d-8d574e2bc15c"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "f5068e21-d39e-41e2-9f15-95fa7f6fd1c2"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionType",
+      "Guid": "d7ba4d85-6eba-40d7-99d8-78652367bb39",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Name": "Set Continue to False if Question Two Incorrect",
+        "Order": 3,
+        "IsActionCompletedOnSuccess": true,
+        "IsActivityCompletedOnSuccess": false,
+        "CriteriaAttributeGuid": "89454ca4-dee0-4916-b1f9-e25095aa1243",
+        "CriteriaComparisonType": 2,
+        "CriteriaValue": "2",
+        "CreatedDateTime": "2021-08-12T12:41:43.27",
+        "ModifiedDateTime": "2021-08-12T12:41:43.27"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "ActivityTypeId",
+          "EntityType": "Rock.Model.WorkflowActivityType",
+          "Type": 1,
+          "Data": "42870f4b-65da-4823-9308-d97b971d9be0"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeValue"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "8bb8e9a8-f11a-4845-b195-8e14ac6439fb",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.6",
+        "ModifiedDateTime": "2021-08-12T12:41:43.6"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "d7eaa859-f500-4521-9523-488b12eaa7d2"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "d7ba4d85-6eba-40d7-99d8-78652367bb39"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "5b0311f5-369b-46a9-8482-edd4dabbb27b",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "93db97fe-3d33-437c-ade7-cdfa8088d354",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.6",
+        "ModifiedDateTime": "2021-08-12T12:41:43.6"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "44a0b977-4730-4519-8ff6-b0a01a95b212"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "d7ba4d85-6eba-40d7-99d8-78652367bb39"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "9b0a9bca-71d6-4fc3-a006-4740daec312d",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.6",
+        "ModifiedDateTime": "2021-08-12T12:41:43.6"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "e5272b11-a2b8-49dc-860d-8d574e2bc15c"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "d7ba4d85-6eba-40d7-99d8-78652367bb39"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionType",
+      "Guid": "fd420779-d4cf-4496-ae0b-44012225b92d",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Name": "Go to Next Section if Continue is True",
+        "Order": 4,
+        "IsActionCompletedOnSuccess": true,
+        "IsActivityCompletedOnSuccess": true,
+        "CriteriaAttributeGuid": "93db97fe-3d33-437c-ade7-cdfa8088d354",
+        "CriteriaComparisonType": 1,
+        "CriteriaValue": "True",
+        "CreatedDateTime": "2021-08-12T12:41:43.27",
+        "ModifiedDateTime": "2021-08-12T12:41:43.27"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "ActivityTypeId",
+          "EntityType": "Rock.Model.WorkflowActivityType",
+          "Type": 1,
+          "Data": "42870f4b-65da-4823-9308-d97b971d9be0"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.ActivateActivity"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "e8abd802-372c-47be-82b1-96f50db5169e",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Active",
+        "Name": "Active",
+        "Description": "Should Service be used?",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "False",
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "AbbreviatedName": "Active",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": null
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.BooleanFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.ActivateActivity"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "69602822-7949-48cb-8ef5-0c69230f00ce",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.633",
+        "ModifiedDateTime": "2021-08-12T12:41:43.633"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "e8abd802-372c-47be-82b1-96f50db5169e"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "fd420779-d4cf-4496-ae0b-44012225b92d"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "3809a78c-b773-440c-8e3f-a8e81d0dae08",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Order",
+        "Name": "Order",
+        "Description": "The order that this service should be used (priority)",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "IsMultiValue": false,
+        "IsRequired": true,
+        "IconCssClass": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "AbbreviatedName": "Order",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": null
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.IntegerFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.ActivateActivity"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "02d5a7a5-8781-46b4-b9fc-af816829d240",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Activity",
+        "Name": "Activity",
+        "Description": "The activity type to activate",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "IsMultiValue": false,
+        "IsRequired": true,
+        "IconCssClass": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "AbbreviatedName": "Activity",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2017-09-28T16:52:04.47"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.WorkflowActivityFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.ActivateActivity"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "ad922e30-cb9c-429d-a766-02c5356a2b94",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "E56703B0-0824-40F8-BA6A-133E46717484",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.633",
+        "ModifiedDateTime": "2021-08-12T12:41:43.633"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "02d5a7a5-8781-46b4-b9fc-af816829d240"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "fd420779-d4cf-4496-ae0b-44012225b92d"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionType",
+      "Guid": "5404abe9-b42e-49a6-9a1a-3313d3aecee3",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Name": "Set Message",
+        "Order": 5,
+        "IsActionCompletedOnSuccess": true,
+        "IsActivityCompletedOnSuccess": false,
+        "CriteriaAttributeGuid": null,
+        "CriteriaComparisonType": 1,
+        "CriteriaValue": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.27",
+        "ModifiedDateTime": "2021-08-12T12:41:43.27"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "ActivityTypeId",
+          "EntityType": "Rock.Model.WorkflowActivityType",
+          "Type": 1,
+          "Data": "42870f4b-65da-4823-9308-d97b971d9be0"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeValue"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "66ebc487-ed44-4657-9646-275c9f58226a",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.663",
+        "ModifiedDateTime": "2021-08-12T12:41:43.663"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "d7eaa859-f500-4521-9523-488b12eaa7d2"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "5404abe9-b42e-49a6-9a1a-3313d3aecee3"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "5e5fc6c2-a495-4d16-b2d5-d32839ad33fd",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "bfd3a571-edf0-45ae-b0e8-28e9f3e9c0cb",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.663",
+        "ModifiedDateTime": "2021-08-12T12:41:43.663"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "44a0b977-4730-4519-8ff6-b0a01a95b212"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "5404abe9-b42e-49a6-9a1a-3313d3aecee3"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "08b1f133-f4fd-40fa-9b1b-1ba39223bbdc",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "It looks like some of your answers are incorrect, please review them.",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.663",
+        "ModifiedDateTime": "2021-08-12T12:41:43.663"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "e5272b11-a2b8-49dc-860d-8d574e2bc15c"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "5404abe9-b42e-49a6-9a1a-3313d3aecee3"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionType",
+      "Guid": "58595406-0331-4570-93f8-63ea7abe5d27",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Name": "Repeat Section if Continue is False",
+        "Order": 6,
+        "IsActionCompletedOnSuccess": true,
+        "IsActivityCompletedOnSuccess": true,
+        "CriteriaAttributeGuid": null,
+        "CriteriaComparisonType": 1,
+        "CriteriaValue": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.27",
+        "ModifiedDateTime": "2021-08-12T12:41:43.27"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "ActivityTypeId",
+          "EntityType": "Rock.Model.WorkflowActivityType",
+          "Type": 1,
+          "Data": "42870f4b-65da-4823-9308-d97b971d9be0"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.ActivateActivity"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "20524e0c-4bd8-4da7-8f6b-6ff21c5b8caa",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.693",
+        "ModifiedDateTime": "2021-08-12T12:41:43.693"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "e8abd802-372c-47be-82b1-96f50db5169e"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "58595406-0331-4570-93f8-63ea7abe5d27"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "cb9ee97f-4a6b-4791-a068-6bc448ecbc83",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "42870F4B-65DA-4823-9308-D97B971D9BE0",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.693",
+        "ModifiedDateTime": "2021-08-12T12:41:43.693"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "02d5a7a5-8781-46b4-b9fc-af816829d240"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "58595406-0331-4570-93f8-63ea7abe5d27"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActivityType",
+      "Guid": "e56703b0-0824-40f8-ba6a-133e46717484",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsActive": true,
+        "Name": "Video Two",
+        "Description": "The form with the second video and set of questions.\nCheck for comprehension with questions.",
+        "IsActivatedWithWorkflow": false,
+        "Order": 1,
+        "CreatedDateTime": "2021-08-12T12:41:43.27",
+        "ModifiedDateTime": "2021-08-12T12:41:43.27"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "WorkflowTypeId",
+          "EntityType": "Rock.Model.WorkflowType",
+          "Type": 1,
+          "Data": "6e05eb0d-700e-4e3f-9452-4d820730a626"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionForm",
+      "Guid": "0295c989-3e4b-4269-96da-af42a9df4bf7",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IncludeActionsInNotification": true,
+        "Header": "{% assign showmsg = Workflow | Attribute:'Continue' %}\n{% if showmsg == false %}\n  <div class=\"alert alert-danger\" role=\"alert\">\n    {{Workflow | Attribute:'Message'}}\n  </div>\n{% endif %}",
+        "Footer": "",
+        "ActionAttributeGuid": null,
+        "AllowNotes": false,
+        "CreatedDateTime": "2021-08-12T12:41:43.38",
+        "ModifiedDateTime": "2021-08-12T12:42:40.92"
+      },
+      "Transforms": {
+        "5df81bd2-6d4e-438e-98a8-6e756b738264": "Finish^fdc397cd-8b4a-436e-bea1-bce2e6717c03^^Thanks for completing the training!"
+      },
+      "References": [
+        {
+          "Property": "NotificationSystemCommunicationId",
+          "EntityType": "Rock.Model.SystemCommunication",
+          "Type": 1,
+          "Data": "88c7d1cc-3478-4562-a301-ae7d4d7fff6d"
+        },
+        {
+          "Property": "Actions",
+          "EntityType": "Rock.Model.DefinedValue",
+          "Type": 1,
+          "Data": "fdc397cd-8b4a-436e-bea1-bce2e6717c03"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionFormAttribute",
+      "Guid": "c8915092-9be9-4eea-8ce7-2735c072c348",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Order": 0,
+        "IsVisible": false,
+        "IsReadOnly": true,
+        "IsRequired": false,
+        "HideLabel": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.38",
+        "ModifiedDateTime": "2021-08-12T12:41:43.38"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "WorkflowActionFormId",
+          "EntityType": "Rock.Model.WorkflowActionForm",
+          "Type": 1,
+          "Data": "0295c989-3e4b-4269-96da-af42a9df4bf7"
+        },
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "0ee3bb85-9ac1-4718-812a-2c9762dcbfe8"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionFormAttribute",
+      "Guid": "7352be20-1731-46d6-b2cb-dc707c5b21a4",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Order": 1,
+        "IsVisible": false,
+        "IsReadOnly": true,
+        "IsRequired": false,
+        "HideLabel": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.38",
+        "ModifiedDateTime": "2021-08-12T12:41:43.38"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "WorkflowActionFormId",
+          "EntityType": "Rock.Model.WorkflowActionForm",
+          "Type": 1,
+          "Data": "0295c989-3e4b-4269-96da-af42a9df4bf7"
+        },
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "afaf4d6a-5105-4c6c-9df5-5284fa74fcda"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionFormAttribute",
+      "Guid": "cf448548-6a16-4ee3-90c2-be83ce8cadff",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Order": 2,
+        "IsVisible": false,
+        "IsReadOnly": true,
+        "IsRequired": false,
+        "HideLabel": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.38",
+        "ModifiedDateTime": "2021-08-12T12:41:43.38"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "WorkflowActionFormId",
+          "EntityType": "Rock.Model.WorkflowActionForm",
+          "Type": 1,
+          "Data": "0295c989-3e4b-4269-96da-af42a9df4bf7"
+        },
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "89454ca4-dee0-4916-b1f9-e25095aa1243"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionFormAttribute",
+      "Guid": "7b1fb3c1-895e-4f9a-8b8e-9778fe542a3e",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Order": 3,
+        "IsVisible": true,
+        "IsReadOnly": true,
+        "IsRequired": false,
+        "HideLabel": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.38",
+        "ModifiedDateTime": "2021-08-12T12:41:43.38"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "WorkflowActionFormId",
+          "EntityType": "Rock.Model.WorkflowActionForm",
+          "Type": 1,
+          "Data": "0295c989-3e4b-4269-96da-af42a9df4bf7"
+        },
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "23c017e9-f1e1-4959-a05e-fbe1c8d85381"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionFormAttribute",
+      "Guid": "96821232-1508-4408-9f36-f198409c74af",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Order": 4,
+        "IsVisible": true,
+        "IsReadOnly": false,
+        "IsRequired": true,
+        "HideLabel": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.38",
+        "ModifiedDateTime": "2021-08-12T12:41:43.38"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "WorkflowActionFormId",
+          "EntityType": "Rock.Model.WorkflowActionForm",
+          "Type": 1,
+          "Data": "0295c989-3e4b-4269-96da-af42a9df4bf7"
+        },
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "b653a5e7-a2aa-4993-9cb9-c36e50c6c36e"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionFormAttribute",
+      "Guid": "fd071fe1-d1eb-4bb5-a656-7672d4302f8f",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Order": 5,
+        "IsVisible": false,
+        "IsReadOnly": true,
+        "IsRequired": false,
+        "HideLabel": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.38",
+        "ModifiedDateTime": "2021-08-12T12:41:43.38"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "WorkflowActionFormId",
+          "EntityType": "Rock.Model.WorkflowActionForm",
+          "Type": 1,
+          "Data": "0295c989-3e4b-4269-96da-af42a9df4bf7"
+        },
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "93db97fe-3d33-437c-ade7-cdfa8088d354"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionFormAttribute",
+      "Guid": "bed6429e-255d-4e85-96d5-5c714a2e1330",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Order": 6,
+        "IsVisible": false,
+        "IsReadOnly": true,
+        "IsRequired": false,
+        "HideLabel": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.38",
+        "ModifiedDateTime": "2021-08-12T12:41:43.38"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "WorkflowActionFormId",
+          "EntityType": "Rock.Model.WorkflowActionForm",
+          "Type": 1,
+          "Data": "0295c989-3e4b-4269-96da-af42a9df4bf7"
+        },
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "bfd3a571-edf0-45ae-b0e8-28e9f3e9c0cb"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionType",
+      "Guid": "5b0eaa01-29b9-4674-9c42-420ce923161e",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Name": "Video Two Form",
+        "Order": 0,
+        "IsActionCompletedOnSuccess": true,
+        "IsActivityCompletedOnSuccess": false,
+        "CriteriaAttributeGuid": null,
+        "CriteriaComparisonType": 1,
+        "CriteriaValue": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.38",
+        "ModifiedDateTime": "2021-08-12T12:41:43.38"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "ActivityTypeId",
+          "EntityType": "Rock.Model.WorkflowActivityType",
+          "Type": 1,
+          "Data": "e56703b0-0824-40f8-ba6a-133e46717484"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.UserEntryForm"
+        },
+        {
+          "Property": "WorkflowFormId",
+          "EntityType": "Rock.Model.WorkflowActionForm",
+          "Type": 1,
+          "Data": "0295c989-3e4b-4269-96da-af42a9df4bf7"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "3f9ddb21-79ec-4862-bbde-43be2e73e339",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.71",
+        "ModifiedDateTime": "2021-08-12T12:41:43.71"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "234910f2-a0db-4d7d-baf7-83c880ef30ae"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "5b0eaa01-29b9-4674-9c42-420ce923161e"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionType",
+      "Guid": "0c185a05-a035-426f-b66b-ecb0c4998045",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Name": "Initialize Continue",
+        "Order": 1,
+        "IsActionCompletedOnSuccess": true,
+        "IsActivityCompletedOnSuccess": false,
+        "CriteriaAttributeGuid": null,
+        "CriteriaComparisonType": 1,
+        "CriteriaValue": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.38",
+        "ModifiedDateTime": "2021-08-12T12:41:43.38"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "ActivityTypeId",
+          "EntityType": "Rock.Model.WorkflowActivityType",
+          "Type": 1,
+          "Data": "e56703b0-0824-40f8-ba6a-133e46717484"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeValue"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "9e192624-0dc9-4cb5-8fa4-c74e56212b83",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.74",
+        "ModifiedDateTime": "2021-08-12T12:41:43.74"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "d7eaa859-f500-4521-9523-488b12eaa7d2"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "0c185a05-a035-426f-b66b-ecb0c4998045"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "569b0c51-a1da-4d15-856d-6c83d9609916",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "93db97fe-3d33-437c-ade7-cdfa8088d354",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.74",
+        "ModifiedDateTime": "2021-08-12T12:41:43.74"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "44a0b977-4730-4519-8ff6-b0a01a95b212"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "0c185a05-a035-426f-b66b-ecb0c4998045"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "8cc7926c-eaa6-42b6-b48b-e305015725fa",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "True",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.74",
+        "ModifiedDateTime": "2021-08-12T12:41:43.74"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "e5272b11-a2b8-49dc-860d-8d574e2bc15c"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "0c185a05-a035-426f-b66b-ecb0c4998045"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionType",
+      "Guid": "1a769379-8718-4bb8-8f8c-7a252f32af9f",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Name": "Set Continue to False if Question Three Incorrect",
+        "Order": 2,
+        "IsActionCompletedOnSuccess": true,
+        "IsActivityCompletedOnSuccess": false,
+        "CriteriaAttributeGuid": "b653a5e7-a2aa-4993-9cb9-c36e50c6c36e",
+        "CriteriaComparisonType": 2,
+        "CriteriaValue": "3",
+        "CreatedDateTime": "2021-08-12T12:41:43.38",
+        "ModifiedDateTime": "2021-08-12T12:41:43.38"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "ActivityTypeId",
+          "EntityType": "Rock.Model.WorkflowActivityType",
+          "Type": 1,
+          "Data": "e56703b0-0824-40f8-ba6a-133e46717484"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeValue"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "98f4cf75-f229-43ef-8414-2324cf633e75",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.773",
+        "ModifiedDateTime": "2021-08-12T12:41:43.773"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "d7eaa859-f500-4521-9523-488b12eaa7d2"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "1a769379-8718-4bb8-8f8c-7a252f32af9f"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "2f1e19a1-7659-4a6e-8c4a-b0805ecb04fa",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "93db97fe-3d33-437c-ade7-cdfa8088d354",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.773",
+        "ModifiedDateTime": "2021-08-12T12:41:43.773"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "44a0b977-4730-4519-8ff6-b0a01a95b212"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "1a769379-8718-4bb8-8f8c-7a252f32af9f"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "684c5707-acc9-4acd-b295-9fda5062c01c",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.773",
+        "ModifiedDateTime": "2021-08-12T12:41:43.773"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "e5272b11-a2b8-49dc-860d-8d574e2bc15c"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "1a769379-8718-4bb8-8f8c-7a252f32af9f"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionType",
+      "Guid": "a656ae72-3be3-4973-8374-3cd95b511997",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Name": "Go to Next Section if Continue is True",
+        "Order": 3,
+        "IsActionCompletedOnSuccess": true,
+        "IsActivityCompletedOnSuccess": true,
+        "CriteriaAttributeGuid": "93db97fe-3d33-437c-ade7-cdfa8088d354",
+        "CriteriaComparisonType": 1,
+        "CriteriaValue": "True",
+        "CreatedDateTime": "2021-08-12T12:41:43.38",
+        "ModifiedDateTime": "2021-08-12T12:41:43.38"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "ActivityTypeId",
+          "EntityType": "Rock.Model.WorkflowActivityType",
+          "Type": 1,
+          "Data": "e56703b0-0824-40f8-ba6a-133e46717484"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.ActivateActivity"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "e31c9e38-ac6c-47a9-a7d1-cd5ed5a060f2",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.803",
+        "ModifiedDateTime": "2021-08-12T12:41:43.803"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "e8abd802-372c-47be-82b1-96f50db5169e"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "a656ae72-3be3-4973-8374-3cd95b511997"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "8e63d325-d3ad-4720-bf6e-7aeb57af44aa",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "67E3B2C1-E1F3-42AE-A4CC-6CADE4913AD5",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.803",
+        "ModifiedDateTime": "2021-08-12T12:41:43.803"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "02d5a7a5-8781-46b4-b9fc-af816829d240"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "a656ae72-3be3-4973-8374-3cd95b511997"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionType",
+      "Guid": "9645b480-5548-425b-a2c5-7ef055acf1b2",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Name": "Set Message",
+        "Order": 4,
+        "IsActionCompletedOnSuccess": true,
+        "IsActivityCompletedOnSuccess": false,
+        "CriteriaAttributeGuid": null,
+        "CriteriaComparisonType": 1,
+        "CriteriaValue": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.38",
+        "ModifiedDateTime": "2021-08-12T12:41:43.38"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "ActivityTypeId",
+          "EntityType": "Rock.Model.WorkflowActivityType",
+          "Type": 1,
+          "Data": "e56703b0-0824-40f8-ba6a-133e46717484"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeValue"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "84e772a9-2cdf-462c-8689-16e9742d1cc3",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.833",
+        "ModifiedDateTime": "2021-08-12T12:41:43.833"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "d7eaa859-f500-4521-9523-488b12eaa7d2"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "9645b480-5548-425b-a2c5-7ef055acf1b2"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "53519857-4e52-4f7e-a3c2-52cfcf4c015e",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "bfd3a571-edf0-45ae-b0e8-28e9f3e9c0cb",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.833",
+        "ModifiedDateTime": "2021-08-12T12:41:43.833"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "44a0b977-4730-4519-8ff6-b0a01a95b212"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "9645b480-5548-425b-a2c5-7ef055acf1b2"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "e50014a2-eb11-45ac-b992-a04e224637ba",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "It looks like some of your answers are incorrect, please review them.",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.833",
+        "ModifiedDateTime": "2021-08-12T12:41:43.833"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "e5272b11-a2b8-49dc-860d-8d574e2bc15c"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "9645b480-5548-425b-a2c5-7ef055acf1b2"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionType",
+      "Guid": "6e294cbe-da89-4a03-8274-d2accd8ba999",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Name": "Repeat Section if Continue is False",
+        "Order": 5,
+        "IsActionCompletedOnSuccess": true,
+        "IsActivityCompletedOnSuccess": true,
+        "CriteriaAttributeGuid": null,
+        "CriteriaComparisonType": 1,
+        "CriteriaValue": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.38",
+        "ModifiedDateTime": "2021-08-12T12:41:43.38"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "ActivityTypeId",
+          "EntityType": "Rock.Model.WorkflowActivityType",
+          "Type": 1,
+          "Data": "e56703b0-0824-40f8-ba6a-133e46717484"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.ActivateActivity"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "aa324a56-d353-4655-be0a-a86104af5c06",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.867",
+        "ModifiedDateTime": "2021-08-12T12:41:43.867"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "e8abd802-372c-47be-82b1-96f50db5169e"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "6e294cbe-da89-4a03-8274-d2accd8ba999"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "a09b18bd-d054-408d-9256-3b3a81ef0909",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "E56703B0-0824-40F8-BA6A-133E46717484",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.867",
+        "ModifiedDateTime": "2021-08-12T12:41:43.867"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "02d5a7a5-8781-46b4-b9fc-af816829d240"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "6e294cbe-da89-4a03-8274-d2accd8ba999"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActivityType",
+      "Guid": "67e3b2c1-e1f3-42ae-a4cc-6cade4913ad5",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsActive": true,
+        "Name": "Process Workflow",
+        "Description": "Here we can really do anything we want, we can send emails to let staff members know someone has completed the class. We can email the person their next steps in the process. We can add steps for a person, update person attributes, add activities to a connection request. You can perform any action that is available in the Rock Workflow Actions to save information about the person that completed this class or training.",
+        "IsActivatedWithWorkflow": false,
+        "Order": 2,
+        "CreatedDateTime": "2021-08-12T12:41:43.38",
+        "ModifiedDateTime": "2021-08-12T12:41:43.38"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "WorkflowTypeId",
+          "EntityType": "Rock.Model.WorkflowType",
+          "Type": 1,
+          "Data": "6e05eb0d-700e-4e3f-9452-4d820730a626"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionType",
+      "Guid": "e1836f38-1b24-4e29-b28f-0aa57149e8d4",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Name": "Complete",
+        "Order": 0,
+        "IsActionCompletedOnSuccess": true,
+        "IsActivityCompletedOnSuccess": true,
+        "CriteriaAttributeGuid": null,
+        "CriteriaComparisonType": 1,
+        "CriteriaValue": "",
+        "CreatedDateTime": "2021-08-12T12:41:43.49",
+        "ModifiedDateTime": "2021-08-12T12:41:43.49"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "ActivityTypeId",
+          "EntityType": "Rock.Model.WorkflowActivityType",
+          "Type": 1,
+          "Data": "67e3b2c1-e1f3-42ae-a4cc-6cade4913ad5"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.CompleteWorkflow"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "0ca0ddef-48ef-4abc-9822-a05e225de26c",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Active",
+        "Name": "Active",
+        "Description": "Should Service be used?",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "False",
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "AbbreviatedName": "Active",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": null
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.BooleanFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.CompleteWorkflow"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "4c1f6b62-76ac-4442-b66a-782aa115c73c",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.883",
+        "ModifiedDateTime": "2021-08-12T12:41:43.883"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "0ca0ddef-48ef-4abc-9822-a05e225de26c"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "e1836f38-1b24-4e29-b28f-0aa57149e8d4"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "25cad4be-5a00-409d-9bab-e32518d89956",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Order",
+        "Name": "Order",
+        "Description": "The order that this service should be used (priority)",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "IsMultiValue": false,
+        "IsRequired": true,
+        "IconCssClass": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "AbbreviatedName": "Order",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2017-09-28T16:52:04.623"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.IntegerFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.CompleteWorkflow"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "07cb7dbc-236d-4d38-92a4-47ee448ba89a",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Status",
+        "Name": "Status|Status Attribute",
+        "Description": "The status to set the workflow to when marking the workflow complete. <span class='tip tip-lava'></span>",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "Completed",
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "AbbreviatedName": "Status|Status Attribute",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": "2018-02-02T13:34:03.073",
+        "ModifiedDateTime": "2018-02-02T13:34:03.073"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.WorkflowTextOrAttributeFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.CompleteWorkflow"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "426d74ed-a3fd-416a-b106-be4018af7030",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "Completed",
+        "ValueAsNumeric": null,
+        "CreatedDateTime": "2021-08-12T12:41:43.883",
+        "ModifiedDateTime": "2021-08-12T12:41:43.883"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "07cb7dbc-236d-4d38-92a4-47ee448ba89a"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "e1836f38-1b24-4e29-b28f-0aa57149e8d4"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "1b7807ea-24b0-4b73-ac78-5269238281c7",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": null,
+        "EntityTypeQualifierValue": null,
+        "Key": "2d5fa153-0543-46d0-9d51-61ac730e9bfc",
+        "Name": "Last Round Robin Person (Select Person)",
+        "Description": null,
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": null,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "AbbreviatedName": "Last Round Robin Person (Select Person)",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": "2017-08-04T11:18:41.303",
+        "ModifiedDateTime": "2017-08-04T11:18:41.303"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.TextFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowType"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "68da4d62-1d68-4044-9947-b854ba6e87de",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": null,
+        "EntityTypeQualifierValue": null,
+        "Key": "1ec26111-8f24-4ad4-8258-6270d7ec9fbe",
+        "Name": "Last Round Robin Person (Assign Pastor)",
+        "Description": null,
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": null,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "AbbreviatedName": "Last Round Robin Person (Assign Pastor)",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": "2017-09-25T14:47:30.373",
+        "ModifiedDateTime": "2017-09-25T14:47:30.373"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.TextFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowType"
+        }
+      ]
+    }
+  ],
+  "RootEntities": [
+    "6e05eb0d-700e-4e3f-9452-4d820730a626"
+  ]
+}
