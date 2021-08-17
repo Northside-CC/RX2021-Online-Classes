@@ -1,2 +1,5 @@
-# RX2021-Online-Classes
-Takeaway for my RX2021 presentation, How to Rock Your Online Courses.
+# RX2021
+This is a join repo that contains files / instructions for both of the following RX2021 breakout sessions:
+
+- _Creating Online Training/Classes with Workflows_ by Courtney Cooksey w/The Crossing
+- _How to Rock Your Online Courses_ by Leah Jennings w/Northside Christian Church
