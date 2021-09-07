@@ -16,7 +16,7 @@ So whether you're here to learn or to plug-and-play this course into your own or
 ### Connection Opportunities
 We'll be creating two opportunities, Online Baptism Class and Baptism Conversations.
 
-##### 1. Online Baptism Class
+### 1. Online Baptism Class
 Create a new Connection Opportunity with the following settings:
 
 1. Name: _Online Baptism Class_
@@ -27,7 +27,7 @@ Create a new Connection Opportunity with the following settings:
 3. Workflows: leave at default
 3. Advanced Settings: leave at default
 
-##### 2. Baptism Conversations
+### 2. Baptism Conversations
 
 Create a new Connection Opportunity with the following settings:
 
@@ -109,7 +109,7 @@ Click into the Workflows folder above to see more details on those, then come ba
 ### Triggers & Jobs
 Now that the workflows are imported, we can setup the different triggers and jobs that are needed to make all of this work together.
 
-##### Triggers
+### Triggers
 1. Trigger on Connection Request Created
     1. Go to the settings of the Online Baptism Class connection opportunity
     2. Expand Workflows and add a new Workflow Type
@@ -119,7 +119,7 @@ Now that the workflows are imported, we can setup the different triggers and job
     2. Expand Workflows and add a new Workflow Type
     3. Choose _Send Final Baptism Class Email if "Not Ready"_ and trigger it on _Future Followup Date Reached_
 
-##### Jobs
+### Jobs
 We'll create two new jobs, one to process "Incomplete Baptism Courses" and one to process "Not Started Baptism Courses"
 
 1. Incomplete Baptism Courses
