@@ -6,13 +6,13 @@
 
 3. Several workflows send emails that aren't System Communications because of the complex lava within the body. Check the following workflows for a single action in each to update the email content to match your organization's branding / communication style:
 
-    1. HELPER: Process Individual Incomplete Week 1 Reminder
-    2. HELPER: Process Individual Incomplete Week 2 Reminder
-    3. HELPER: Process Individual Incomplete Week 3 Reminder
-    4. HELPER: Process Individual Not Started Week 1 Reminder
-    5. HELPER: Process Individual Not Started Week 2 Reminder
-    6. HELPER: Process Individual Not Started Week 3 Reminder
-    7. Baptism Class - Email requestor when connection is created
+    - HELPER: Process Individual Incomplete Week 1 Reminder
+    - HELPER: Process Individual Incomplete Week 2 Reminder
+    - HELPER: Process Individual Incomplete Week 3 Reminder
+    - HELPER: Process Individual Not Started Week 1 Reminder
+    - HELPER: Process Individual Not Started Week 2 Reminder
+    - HELPER: Process Individual Not Started Week 3 Reminder
+    - Baptism Class - Email requestor when connection is created
 
 4. Several workflows send System Communications, so those workflow actions need to be set to the correct System Communication.
 
