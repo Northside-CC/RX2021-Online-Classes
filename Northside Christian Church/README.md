@@ -13,7 +13,7 @@ So whether you're here to learn or to plug-and-play this course into your own or
 6. Triggers & Jobs
 
 
-#### Connection Opportunities
+### Connection Opportunities
 We'll be creating two opportunities, Online Baptism Class and Baptism Conversations.
 
 ##### 1. Online Baptism Class
@@ -41,7 +41,7 @@ Create a new Connection Opportunity with the following settings:
 
 ***
 
-#### Steps
+### Steps
 We're going to create a new Step Program called _Baptism Class_.
 
 1. Icon CSS Class: _fas fa-tint_
@@ -82,7 +82,7 @@ Step Types:
 
 ***
 
-#### System Communications
+### System Communications
 You'll need to create 3 different emails (the code for each of them is in the System Communications folder):
 - _Baptism - Not Ready Yet Final Follow-Up_
 - _Connection - Completed Baptism Class_
@@ -92,7 +92,7 @@ Once setup, you'll want to change the branding/styling and verbiage, but leave a
 
 ***
 
-#### Person Attributes
+### Person Attributes
 We added these before we had Steps, so you can add these so the workflow will know which attributes to update, OR you can delete the workflow actions in the Online Baptism Class workflow that set these attributes. But essentially we need three attributes that are all a `Date` field type:
 
 1. Baptism Video #1 Completion Date (Key: _BaptismVideo1CompletionDate_)
@@ -101,12 +101,12 @@ We added these before we had Steps, so you can add these so the workflow will kn
 
 ***
 
-#### Workflows
+### Workflows
 Click into the Workflows folder above to see more details on those, then come back to complete the rest of the steps.
 
 ***
 
-#### Triggers & Jobs
+### Triggers & Jobs
 Now that the workflows are imported, we can setup the different triggers and jobs that are needed to make all of this work together.
 
 ##### Triggers
@@ -135,7 +135,7 @@ We'll create two new jobs, one to process "Incomplete Baptism Courses" and one t
 
 ***
 
-#### Wrapping it Up
+### Wrapping it Up
 The last piece of the puzzle is setting a Workflow Type Id in one of the System Communications.
 
 1. Open the _Baptism - Not Ready Yet Final Follow-Up_ System Communication
