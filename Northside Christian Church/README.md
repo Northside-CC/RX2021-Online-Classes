@@ -1,5 +1,5 @@
-# RX2021-Online-Classes
-Takeaway for my RX2021 presentation, How to Rock Your Online Courses.
+# How to Rock Your Online Courses
+### RX2021 Presentation
 
 ## Start Here
 So whether you're here to learn or to plug-and-play this course into your own organization, we've got you covered. You can find everything you need in this repo! And if you have any questions or run into any snags, hit me up on Rocket.chat **@leahjennings**.
